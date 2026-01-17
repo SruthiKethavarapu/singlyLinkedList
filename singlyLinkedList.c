@@ -11,9 +11,6 @@ struct itemDetails
 	float itemPrice;
 	struct itemDetails *next;
 };
-
-//typedef struct itemDetails item;
-
 struct itemDetails *head = NULL;
 struct itemDetails* createNode(char itemID[], char itemName[], float itemPrice)
 {
@@ -82,4 +79,5 @@ int main()
 	printf("\n--- Item List ---\n");
 	displayItems();
 	return 0;
+
 }
