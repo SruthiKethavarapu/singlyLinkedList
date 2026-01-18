@@ -6,6 +6,7 @@
 #define LISTEMPTY printf("\nList is empty\n");
 #define ITEMNOTFOUND printf("\nItem not found\n");
 #define ITEMDELETED printf("Item deleted successfully.\n");
+
 struct itemDetails 
 {
 	char itemID[10];
@@ -13,7 +14,6 @@ struct itemDetails
 	float itemPrice;
 	struct itemDetails *next;
 };
-
 struct itemDetails *head = NULL;
 struct itemDetails* createNode(char itemID[], char itemName[], float itemPrice)
 {
@@ -37,7 +37,7 @@ void insertItem()
     scanf("%f", &itemPrice);
 
 	struct itemDetails *newNode = createNode(itemID, itemName, itemPrice);
-	if(head == NULL)
+	if (head == NULL)
 	{
 		head = newNode;
 		return;
@@ -53,13 +53,13 @@ void insertItem()
 void displayItems()
 {
 	struct itemDetails *temporaryNode = head;
-	if(temporaryNode == NULL)
+	if (temporaryNode == NULL)
 	{
 		LISTEMPTY
 		return;
 	}
 	printf("\n--- Item List ---\n");
-	while(temporaryNode!= NULL)
+	while (temporaryNode!= NULL)
 	{
 		printf("Item ID: %s\n", temporaryNode->itemID);
         printf("Item Name: %s\n", temporaryNode->itemName);
@@ -73,7 +73,7 @@ void updateItem()
 {
 	char searchID[10];
 	float newPrice;
-	if(head == NULL)
+	if (head == NULL)
 	{
 		LISTEMPTY
 		return;
@@ -81,9 +81,9 @@ void updateItem()
 	printf("Enter item id to update: ");
 	scanf("%s", searchID);
 	struct itemDetails *temporaryNode = head;
-	while(temporaryNode != NULL)
+	while (temporaryNode != NULL)
 	{
-		if(strcmp(searchID, temporaryNode->itemID) == 0)
+		if (strcmp(searchID, temporaryNode->itemID) == 0)
 		{
 			printf("Enter new price: ");
 			scanf("%f", &newPrice);
@@ -107,7 +107,7 @@ void deleteItem()
 	}
 	printf("Enter item id to delete: ");
 	scanf("%s", searchID);
-	if(strcmp(head->itemID, searchID) == 0)
+	if (strcmp(head->itemID, searchID) == 0)
 	{
 		temporaryNode = head;
 		head = head->next;
@@ -117,7 +117,7 @@ void deleteItem()
 	}
 	while (temporaryNode != NULL)
 	{
-		if(strcmp(temporaryNode->itemID, searchID) == 0)
+		if (strcmp(temporaryNode->itemID, searchID) == 0)
 		{
 			previousNode->next = temporaryNode->next;
 			free(temporaryNode);
@@ -133,7 +133,7 @@ void deleteItem()
 int main() 
 {
 	int choice;
-	while(1)
+	while (1)
 	{
 		printf("\n1. Insert item\n2. Display item\n3. Update item\n4. Delete item\n5. Exit\n\n");
 		printf("Enter your choice: ");
@@ -149,4 +149,5 @@ int main()
         }
 	}
 	return 0;
+
 }
