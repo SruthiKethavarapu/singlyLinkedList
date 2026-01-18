@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#define LISTEMPTY printf("\nList is empty\n");
+#define ITEMNOTFOUND printf("\nItem not found\n");
+#define ITEMDELETED printf("Item deleted successfully.\n");
 struct itemDetails 
 {
 	char itemID[10];
@@ -11,6 +13,7 @@ struct itemDetails
 	float itemPrice;
 	struct itemDetails *next;
 };
+
 struct itemDetails *head = NULL;
 struct itemDetails* createNode(char itemID[], char itemName[], float itemPrice)
 {
@@ -22,8 +25,17 @@ struct itemDetails* createNode(char itemID[], char itemName[], float itemPrice)
 	return newNode;
 }
 
-void insertItem(char itemID[], char itemName[], float itemPrice)
+void insertItem()
 {
+	char itemID[10], itemName[30];
+	float itemPrice;
+	printf("Item ID: ");
+    scanf("%s", itemID);
+    printf("Item Name: ");
+    scanf("%s", itemName);
+    printf("Item Price: ");
+    scanf("%f", &itemPrice);
+
 	struct itemDetails *newNode = createNode(itemID, itemName, itemPrice);
 	if(head == NULL)
 	{
@@ -43,9 +55,10 @@ void displayItems()
 	struct itemDetails *temporaryNode = head;
 	if(temporaryNode == NULL)
 	{
-		printf("List is empty\n");
+		LISTEMPTY
 		return;
 	}
+	printf("\n--- Item List ---\n");
 	while(temporaryNode!= NULL)
 	{
 		printf("Item ID: %s\n", temporaryNode->itemID);
@@ -53,31 +66,87 @@ void displayItems()
         printf("Item Price: %.2f\n\n", temporaryNode->itemPrice);
         temporaryNode = temporaryNode->next;
 	}
+
+}
+
+void updateItem()
+{
+	char searchID[10];
+	float newPrice;
+	if(head == NULL)
+	{
+		LISTEMPTY
+		return;
+	}
+	printf("Enter item id to update: ");
+	scanf("%s", searchID);
+	struct itemDetails *temporaryNode = head;
+	while(temporaryNode != NULL)
+	{
+		if(strcmp(searchID, temporaryNode->itemID) == 0)
+		{
+			printf("Enter new price: ");
+			scanf("%f", &newPrice);
+			temporaryNode->itemPrice = newPrice;
+			printf("Item updated successfully.\n");
+			return;
+		}
+		temporaryNode = temporaryNode->next;
+	}
+	ITEMNOTFOUND
+}
+
+void deleteItem()
+{
+	char searchID[10];
+	struct itemDetails *temporaryNode = head, *previousNode = NULL;
+	if (head == NULL)
+	{
+		LISTEMPTY
+		return;
+	}
+	printf("Enter item id to delete: ");
+	scanf("%s", searchID);
+	if(strcmp(head->itemID, searchID) == 0)
+	{
+		temporaryNode = head;
+		head = head->next;
+		free(temporaryNode);
+		ITEMDELETED
+		return;
+	}
+	while (temporaryNode != NULL)
+	{
+		if(strcmp(temporaryNode->itemID, searchID) == 0)
+		{
+			previousNode->next = temporaryNode->next;
+			free(temporaryNode);
+			ITEMDELETED
+			return;
+		}
+		previousNode = temporaryNode;
+		temporaryNode = temporaryNode->next;
+	}
+	ITEMNOTFOUND
 }
 
 int main() 
 {
-	int count, counter;
-	char itemID[10], itemName[30];
-	float itemPrice;
-	printf("Enter how many items you want: ");
-	scanf("%d", &count);
-	for(counter = 0; counter < count; counter++)
+	int choice;
+	while(1)
 	{
-		printf("Enter item%d details: \n", counter+1);
-		printf("Item ID: ");
-        scanf("%s", itemID);
-
-        printf("Item Name: ");
-        scanf("%s", itemName);   
-
-        printf("Item Price: ");
-        scanf("%f", &itemPrice);
-
-        insertItem(itemID, itemName, itemPrice);
+		printf("\n1. Insert item\n2. Display item\n3. Update item\n4. Delete item\n5. Exit\n\n");
+		printf("Enter your choice: ");
+		scanf("%d", &choice);
+		switch (choice)
+        {
+            case 1: insertItem(); break;
+            case 2: displayItems(); break;
+            case 3: updateItem(); break;
+            case 4: deleteItem(); break;
+            case 5: printf("Exiting...\n"); return 0;
+            default: printf("Invalid choice\n");
+        }
 	}
-	printf("\n--- Item List ---\n");
-	displayItems();
 	return 0;
-
 }
