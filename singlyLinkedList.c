@@ -14,7 +14,17 @@ struct itemDetails
 	float itemPrice;
 	struct itemDetails *next;
 };
+
+void insertItem();
+void displayItems();
+int deleteItem(struct itemDetails *itemToDelete);
+int updateItem(struct itemDetails *itemToUpdate);
+struct itemDetails* getItemByID();
+struct itemDetails* searchByID(char searchID[10]);
+
 struct itemDetails *head = NULL;
+struct itemDetails **item = NULL;
+
 struct itemDetails* createNode(char itemID[], char itemName[], float itemPrice)
 {
 	struct itemDetails *newNode = (struct itemDetails *)malloc(sizeof(struct itemDetails));
@@ -66,73 +76,68 @@ void displayItems()
         printf("Item Price: %.2f\n\n", temporaryNode->itemPrice);
         temporaryNode = temporaryNode->next;
 	}
-
 }
 
-void updateItem()
+int updateItem(struct itemDetails *itemToUpdate)
 {
-	char searchID[10];
 	float newPrice;
-	if (head == NULL)
+	if (itemToUpdate == NULL)
 	{
-		LISTEMPTY
-		return;
+		ITEMNOTFOUND
+		return 0;
 	}
-	printf("Enter item id to update: ");
-	scanf("%s", searchID);
-	struct itemDetails *temporaryNode = head;
-	while (temporaryNode != NULL)
-	{
-		if (strcmp(searchID, temporaryNode->itemID) == 0)
-		{
-			printf("Enter new price: ");
-			scanf("%f", &newPrice);
-			temporaryNode->itemPrice = newPrice;
-			printf("Item updated successfully.\n");
-			return;
-		}
-		temporaryNode = temporaryNode->next;
-	}
-	ITEMNOTFOUND
+	printf("Enter new price: ");
+	scanf("%f", &newPrice);
+	itemToUpdate->itemPrice = newPrice;
+	printf("Item updated successfully.\n");	
+	return 1;
 }
 
-void deleteItem()
+int deleteItem(struct itemDetails *itemToDelete)
 {
-	char searchID[10];
-	struct itemDetails *temporaryNode = head, *previousNode = NULL;
-	if (head == NULL)
+	if (itemToDelete == NULL)
 	{
-		LISTEMPTY
-		return;
+		ITEMNOTFOUND
+		return 0;
+	}	
+	item = &head;
+	while((*item) != itemToDelete)
+	{
+		item = &((*item)->next);
 	}
-	printf("Enter item id to delete: ");
-	scanf("%s", searchID);
-	if (strcmp(head->itemID, searchID) == 0)
+	*item = (*item)->next;
+	free(itemToDelete);
+	ITEMDELETED
+	return 1;
+}
+
+struct itemDetails* getItemByID()
+{
+    char searchID[10];
+    printf("Enter item ID: ");
+    scanf("%s", searchID);
+    return searchByID(searchID);
+}
+
+struct itemDetails* searchByID(char *searchID)
+{
+	struct itemDetails *temporaryNode = head;
+	while(temporaryNode != NULL)
 	{
-		temporaryNode = head;
-		head = head->next;
-		free(temporaryNode);
-		ITEMDELETED
-		return;
-	}
-	while (temporaryNode != NULL)
-	{
-		if (strcmp(temporaryNode->itemID, searchID) == 0)
+		if(strcmp(temporaryNode->itemID, searchID) == 0)
 		{
-			previousNode->next = temporaryNode->next;
-			free(temporaryNode);
-			ITEMDELETED
-			return;
+			return temporaryNode;
 		}
-		previousNode = temporaryNode;
 		temporaryNode = temporaryNode->next;
 	}
-	ITEMNOTFOUND
+	return NULL;
 }
 
 int main() 
 {
 	int choice;
+	char searchID[10];
+	struct itemDetails *found;
 	while (1)
 	{
 		printf("\n1. Insert item\n2. Display item\n3. Update item\n4. Delete item\n5. Exit\n\n");
@@ -140,14 +145,26 @@ int main()
 		scanf("%d", &choice);
 		switch (choice)
         {
-            case 1: insertItem(); break;
-            case 2: displayItems(); break;
-            case 3: updateItem(); break;
-            case 4: deleteItem(); break;
-            case 5: printf("Exiting...\n"); return 0;
-            default: printf("Invalid choice\n");
+            case 1: 
+            	insertItem(); 
+            	break;
+            case 2: 
+            	displayItems(); 
+            	break;
+            case 3: 
+                found = getItemByID();
+                updateItem(found); 
+            	break;
+            case 4: 
+                found = getItemByID();
+                deleteItem(found); 
+            	break;
+            case 5: 
+            	printf("Exiting...\n"); 
+            	return 0;
+            default: 
+            	printf("Invalid choice\n");
         }
 	}
 	return 0;
-
 }
