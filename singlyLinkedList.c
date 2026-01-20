@@ -7,13 +7,13 @@
 #define ITEMNOTFOUND printf("\nItem not found\n");
 #define ITEMDELETED printf("Item deleted successfully.\n");
 #define DATAFILE "itemRecords.dat"
+
 struct item 
 {
 	char itemID[10];
 	char itemName[30];
 	float itemPrice;
 };
-
 struct node
 {
 	struct item data;
@@ -30,8 +30,6 @@ struct node* getItemByID();
 struct node* searchByID(char searchID[10]);
 
 struct node *head = NULL;
-
-
 struct node* createNode(char itemID[], char itemName[], float itemPrice)
 {
 	struct node *newNode = (struct node *)malloc(sizeof(struct node));
@@ -278,4 +276,5 @@ int main()
         }
 	}
 	return 0;
+
 }
